@@ -1,2 +1,28 @@
 # Investigation on the Relationship Between Cooking Time and Average Recipe Ratings
-This is a project for DSC 80 at UCSD.
+
+by Xingyue Yan (x8yan@ucsd.edu)
+
+
+---
+
+## Introduction
+
+
+
+---
+
+## Cleaning and EDA
+
+
+
+---
+
+## Assessment of Missingness
+
+
+
+
+
+## Hypothesis Testing
+
+
