@@ -138,7 +138,7 @@ The cleaned dataframe has 80870 rows and 24 columns. The first 5 rows of the cle
 I first plotted the distribution of cooking times for recipes in the dataset using a histogram. As shown below, most recipes take between 0 and 60 minutes to prepare, with a peak of around 30 minutes. The median cooking time is **35 minutes**, as indicated by the red dashed line. The distribution is right-skewed, which aligns with expectations.  
 
 <iframe
-  src="recipes-analysis/assets/cooking_time_distribution.html"
+  src="assets/cooking_time_distribution.html"
   width="800"
   height="600"
   frameborder="0"
@@ -206,9 +206,24 @@ The bar plot below shows the relationship between cooking time and the mean numb
 
 
 ## Assessment of Missingness
+In the cleaned dataset, columns of 'average_rating' and 'description' have a lot missing values. The following  assessment of missingness dive into the type of missingness and the its dependency.
 
+### NMAR Analysis
 
+I believe that the missingness of the `average_rating` column is **NMAR (Not Missing at Random)**. The reason behind is that recipes with no ratings (and thus no `average_rating`) are likely to be less popular or less frequently interacted with by users. In other words, recipes that are more popular or have been tried by more users are more likely to receive ratings, while less popular recipes may remain unrated. Such introduces a bias in the missingness of the `average_rating` column, making it NMAR.
 
+### Missingness Dependency
+I analyzed the missingness of the `average_rating` column by testing its dependency on two other columns: `minutes` (cooking time) and `n_steps` (number of steps).
+
+> Cooking Time (`minutes`) and Average Rating
+
+**Null Hypothesis**: The missingness of average ratings does not depend on the cooking time of the recipe.
+
+**Alternate Hypothesis**: The missingness of average ratings does depend on the cooking time of the recipe.
+
+**Test Statistic**: The absolute difference in the mean cooking time between recipes with missing average ratings and recipes with non-missing average ratings.
+
+**Significance Level**: 0.05
 
 ## Hypothesis Testing
 
