@@ -149,7 +149,7 @@ I first plotted the distribution of cooking times for recipes in the dataset usi
 I then analyze the distribution of average ratings for recipes with another histogram. Most recipes have ratings between 4 and 5, indicating that users generally rate recipes highly. The mean average rating is **4.63**, as indicated by the green dashed line. The overall distribution is left-skewed.
 
 <iframe
-  src="recipes-analysis/assets/average_rating_distribution.html"
+  src="assets/average_rating_distribution.html"
   width="800"
   height="600"
   frameborder="0"
@@ -160,7 +160,7 @@ I then analyze the distribution of average ratings for recipes with another hist
 The heatmap below shows the density of recipes across cooking time and average rating. Darker colors indicate a lower number of recipes, while lighter colors indicate fewer recipes. The graph shows that the lightest color appears for recipes with a cooking time of 0–30 minutes and an average rating of 5, implying that quick, highly-rated recipes are popular. As cooking time increases, the colors seem to darken for each rating, indicating fewer recipes, suggesting that users may prefer shorter preparation times.
 
 <iframe
-  src="recipes-analysis/assets/heatmap_minutes_vs_rating.html"
+  src="assets/heatmap_minutes_vs_rating.html"
   width="800"
   height="600"
   frameborder="0"
@@ -169,7 +169,7 @@ The heatmap below shows the density of recipes across cooking time and average r
 To further evaluate the relationship between average rating and cooking time, I plotted a horizontal grouped bar plot, comparing the distribution of average ratings for recipes that take 30 minutes or less (yellow) and those that take more than 30 minutes*. Each bar represents the proportion of recipes with a specific average rating in each group. Recipes with a cooking time of ≤30 minutes tend to have a higher proportion of 5-star ratings. Such further indicates that users might prefer quick recipes and are more likely to rate them highly. Nevertheless, further analysis will be conducted to check if the difference in the proportion is significant or not.
 
 <iframe
-  src="recipes-analysis/assets/rating_distribution_cooking_time_30.html"
+  src="assets/rating_distribution_cooking_time_30.html"
   width="800"
   height="600"
   frameborder="0"
@@ -225,6 +225,84 @@ I analyzed the missingness of the `average_rating` column by testing its depende
 
 **Significance Level**: 0.05
 
+The KDE plot below compares the distribution of cooking times (`minutes`) for recipes where the `average_rating` is missing and where it is not missing. This helps us understand whether the missingness of `average_rating` is related to cooking time. The curves are clearly distinct when cooking time is below around 50 cooking minutes,and it became overlaped when cooking time increases. It suggests that the missingness of `average_rating` may depend on cooking time. 
+
+<iframe
+  src="assets/kde_minutes_by_average_rating_missingness.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+I conducted a permutation test through randomly shuffling the missingness of average rating for 1000 times to determine whether the missingness of `average_rating` depends on cooking time (`minutes`). 
+
+<iframe
+  src="assets/permutation_test_distribution_cooking_time.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+The observed test statistic of **9.61** indicates a substantial difference in the mean cooking time between recipes with missing and non-missing `average_rating`. The p-value of **0.0** suggests that the probability of observing such a large difference by random chance is extremely low. This provides strong evidence to **reject the null hypothesis**, meaning that the missingness of `average_rating` is very likely to  **dependent on cooking time**. Nevertheless, it is important to keep in mind that we are using the `minutes` from the cleaned data, where extremely large minutes, those greater than 360, were removed. 
+
+> Sodium and Average Rating
+
+**Null Hypothesis:** The missingness of ratings does not depend on the sodium content of the recipe.
+
+**Alternate Hypothesis:** The missingness of ratings does depend on the sodium content of the recipe.
+
+**Test Statistic:** The absolute difference of mean in sodium content (PDV) of the distribution of the group with missing ratings and the distribution of the group without missing ratings.
+
+**Significance Level:** 0.05
+
+<iframe
+  src="assets/empirical_diff_sodium_prescale.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+Since I did not remove outliers in sodium, it is hard to identify the shapes of the two distributions due to outliers. I updated the upper bound using IQR method to take a closer look.
+
+<iframe
+  src="assets/kde_sodium_by_average_rating_missingness_zoomed.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+Through similar shuffling process, I collect 1000 simulated mean differences in the two distributions as described in the test statistic.
+
+<iframe
+  src="assets/permutation_test_sodium.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+The **observed statistic** is  **1.3882** , shown by the red vertical line on the graph. Since the **p-value** that we found **(1.39)** is **greater than** 0.05, we **fail to reject** the null hypothesis. The missingness of ratings is likely to **not depend** on the sodium content of the recipe.
+
+
 ## Hypothesis Testing
 
+I am curious about whether recipes with longer cooking times (above 30 minutes) are rated differently compared to recipes with shorter cooking times (30 minutes or less). I take 30 minutes as an standard because it is around median of cooking time, and according to the bivariate analysis we conducted before, recipes with a cooking time of ≤30 minutes tend to have a higher proportion of 5-star ratings. To investigate this, I performed a permutation test with the following hypotheses, test statistic, and significance level.
+
+**Null Hypothesis:** Recipes with cooking times above 30 minutes are rated the same as recipes with cooking times equal to or below 30 minutes.
+
+**Alternative Hypothesis:** Recipes with cooking times above 30 minutes are rated lower than recipes with cooking times equal to or below 30 minutes.
+
+**Test Statistic:** The difference in mean rating between recipes with cooking times equal to or below 30 minutes and recipes with cooking times above 30 minutes.
+
+**Significance Level:** 0.05
+
+I chose a permutation test because we do not have information about the underlying population distribution, and I want to test whether the two groups of recipes (above 30 minutes and below/equal to 30 minutes) come from the same distribution. The test statistic, the difference in mean ratings, allows us to directly compare the average ratings of the two groups with direction.
+
+The red vertical line on the graph shows a **observed test statistic** of **0.0311**. Since the **p-value** that we found **(0.0)** is **less than** 0.05, which is the significance level that we set, we **reject** the null hypothesis. This suggests that recipes with cooking times above 30 minutes are rated significantly differently compared to recipes with cooking times equal to or below 30 minutes. Specifically, recipes with shorter cooking times (≤30 minutes)  **tend to have higher average ratings** than recipes with longer cooking times (>30 minutes), but it is not certain.
+
+<iframe
+  src="assets/permutation_test_minutes_vs_rating.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
 
