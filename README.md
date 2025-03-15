@@ -363,9 +363,9 @@ To assess the fairness of the final model, I evaluated if it performs differentl
 - **Group X (High-Calorie Recipes)**: Recipes with calories greater than or equal to the **75th percentile** of the `'calories'` distribution.
 - **Group Y (Low-Calorie Recipes)**: Recipes with calories less than or equal to the **25th percentile** of the `'calories'` distribution.
 
-I chose these thresholds to ensure that the groups represent distinct subsets of the data. That is, high-calorie recipes should be significantly more calorie-dense than low-calorie recipes.
+Since calorie is one the most common factors that people consider when eating outside or cooking at home, it would be intriguing to see how our model's prediction changes for high-calorie and low-calorie recipes as it reflects meaningful differences in user preferences and dietary goals. To be more specific, high-calorie recipes are often related to indulgence or comfort food, and low-calorie recipes might attract people who are on a diet, preparing for physical competition, or pursuing a personal health goal. By evaluating the model's performance across these groups, we can assess whether it is biased toward one type of recipe, which could unfairly impact users with specific dietary preferences. I chose the 75th  and 25th percentiles as thresholds to ensure that the groups represent distinct subsets of the data. 
 
-I used **Mean Absolute Error (MAE)** as the evaluation metric, which is the same metric we use for modeling. This metric is suitable because it would provide a straightforward interpretation of the model's prediction errors in the same units as the response variable.
+I used **Mean Absolute Error (MAE)** as the evaluation metric, which is the same metric we use for modeling. It would provide a straightforward interpretation of the model's prediction errors in the same units as the response variable.
 
 - **Null Hypothesis**: The model is fair. The MAE for high-calorie recipes and low-calorie recipes is roughly the same, and any differences are due to random chance.
 
