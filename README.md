@@ -353,7 +353,7 @@ I also experimented with **Lasso Regression** for comparison and performed hyper
 
 As mentioned before, the baseline model resulted a **Mean Absolute Error (MAE)** of **0.4617** and an **R-squared** value of **0.0005**. Our final Linear Regression model which adds more features has a slightly better **MAE** of **0.4613** and an **R-squared** value of **0.0010**. Although the improvement in MAE is minimal, the final model's R-squared value is higher, indicating that the model could explain a slightly larger portion of the variance in the data compared to the baseline model.
 
-Such improvement can be attributed to the inclusion of additional features and more sophisticated feature engineering. For example, by adding features like `'steps_per_ingredient'` and `'prop_sugar'`, the final model was able to capture more nuanced relationships between recipe characteristics and user ratings. 
+Such improvement can be attributed to the inclusion of additional features and more sophisticated feature engineering. For example, by adding features like `'steps_per_ingredient'` and `'prop_sugar'`, the final model is able to capture more nuanced relationships between recipe characteristics and user ratings. 
  
 
 ## Fairness Analysis
