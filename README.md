@@ -172,7 +172,7 @@ The heatmap below shows the density of recipes across cooking time and average r
 To further evaluate the relationship between average rating and cooking time, I plotted a horizontal grouped bar plot, comparing the distribution of average ratings for recipes that take 30 minutes or less (yellow) and those that take more than 30 minutes using `'minutes'`, not `'is_30_minutes_or_less'` tag. Each bar represents the proportion of recipes with a specific average rating in each group. Recipes with a cooking time of less than 30 minutes tend to have a higher proportion of 5-star ratings. Such further indicates that users might prefer quick recipes and are more likely to rate them highly. Nevertheless, further analysis will be conducted to check if the difference in the proportion is significant or not.
 
 <iframe
-  src="recipes-analysis/assets/rating_distribution_cooking_time_30_real.html"
+  src="assets/rating_distribution_cooking_time_30_real.html"
   width="800"
   height="600"
   frameborder="0"
