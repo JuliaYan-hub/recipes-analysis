@@ -258,13 +258,6 @@ The observed test statistic is **9.61**, which means there is a substantial diff
 
 **Significance Level:** 0.05
 
-<iframe
-  src="assets/empirical_diff_sodium_prescale.html"
-  width="800"
-  height="600"
-  frameborder="0"
-></iframe>
-
 Since I did not remove outliers in sodium, it is hard to identify the shapes of the two distributions due to outliers. I updated the upper bound using IQR method to take a closer look.
 
 <iframe
@@ -313,7 +306,7 @@ The **observed test statistic** is **0.0311**, as how red vertical line on the g
 
 With previous analysis, it would be valuable to form a model to predict the **average rating** of a recipe based on its features. Such would allow users to gauge the overall quality and popularity of a recipe in a short time without needing to scroll through individual reviews. In other words, the average rating serves as a summary of user satisfaction and can help others decide whether to try a recipe. Additionally, this prediction can provide insights for creators into how to improve recipes by identifying which features, such as cooking time and number of ingredients, are associated with higher or lower ratings.
 
-We will use **regression ** because while rating is a categorical value, our response variable (`average_rating`) is a continuous numeric value ranging from 1 to 5. ( We would remove NA values for effective and unbiased analysis). With average rating as our response variable, I planned to take `minutes`(the time required to prepare the recipe),`n_steps`(The number of steps in the recipe), `is_easy`(Whether the recipe is easy) as features used to predict `average_rating`. I planned to include features because they directly or indirectly influence user experience and satisfaction.
+We will use **regression** because while rating is a categorical value, our response variable (`average_rating`) is a continuous numeric value ranging from 1 to 5. ( We would remove NA values for effective and unbiased analysis). With average rating as our response variable, I planned to take `minutes`(the time required to prepare the recipe),`n_steps`(The number of steps in the recipe), `is_easy`(Whether the recipe is easy) as features used to predict `average_rating`. I planned to include features because they directly or indirectly influence user experience and satisfaction.
 
 Since the average rating is a continuous numerical variable with a highly skewed distribution,  I will use **Mean Absolute Error (MAE)** to evaluate the accuracy of the model, as it measures the average absolute difference between the predicted and observed values. Such would provide us with a clear interpretation of the average error in the same units as the response variable (`average_rating`). Also, it is less sensitive to outliers and skewed data because it does not square errors, considering that most average ratings in our dataset are concentrated in the 4-5 range. I chose this instead of **F1-score** is because **F1-score** is a metric for classification tasks, and our problem is a regression problem.
 
@@ -321,7 +314,7 @@ Since the average rating is a continuous numerical variable with a highly skewed
 
 For the baseline model, I trained a **Linear Regression model** to predict the average rating of recipes. The dataset was randomly split into training (80%) and test (20%) sets to evaluate the model. The two key features in this baseline model are `real_30_minutes_or_less`, a binary nominal feature indicating whether the recipe takes 30 minutes or less to prepare based on `minutes` (`1` for `True` and `0` for `False`), and `'is_easy'`, a binary nominal feature indicating whether the recipe is tagged as "easy" (`1` for `True` and `0` for `False`). 
 
-The baseline model has an MAE of **0.4617**. This means that the predictions of baseline model are, on average, off by about **0.4617** points from the observed average ratings. Given that `average_rating` ranges from 1 to 5, we can say that the model's preformance is acceptable. Nevertheless, surther analysis of additional features like `n_steps`, `n_ingredients`, and `calories` and more advanced models to improve performance and better capture the factors influencing recipe ratings are needed. 
+The baseline model has an MAE of **0.4617**. This means that the predictions of the baseline model are, on average, off by about **0.4617** points from the observed average ratings. Given that `average_rating` ranges from 1 to 5, we can say that the model's performance is acceptable. Nevertheless, further analysis of additional features like `n_steps`, `n_ingredients`, and `calories` and more advanced models to improve performance and better capture the factors influencing recipe ratings are needed. 
 
 ## Final Model
 
@@ -352,32 +345,33 @@ It is a binary feature that shows whether a recipe is tagged as "easy" in its `'
 
 ### Hyperparameter Tuning
 
-Since Linear Regression does not have hyperparameters to tune, I focused on feature engineering and preprocessing to improve the model's performance. I standardized the numerical features using `StandardScaler` and one-hot encoded the categorical features (`real_30_minutes_or_less` and `is_easy`) to ensure they were in a suitable format for the model.
+I focused on feature engineering and preprocessing to improve the model's performance, considering that linear regression does not have hyperparameters to tune. To make variables more suitable for the model, I standardized the numerical features using `StandardScaler`  and one-hot encoded the categorical features on `real_30_minutes_or_less` and `is_easy`.
 
-For comparison, I also experimented with **Lasso Regression** and performed hyperparameter tuning using `GridSearchCV` to find the best regularization strength (`alpha`). The best hyperparameters for Lasso Regression were:'model__alpha': 0.01
+I also experimented with **Lasso Regression** for comparison and performed hyperparameter tuning using `GridSearchCV` to find the best regularization strength (`alpha`). The best hyperparameters for Lasso Regression were:'model__alpha': 0.01
 
 ### Final Model Performance and Improvement
 
-As mentioned before,The baseline model achieved a **Mean Absolute Error (MAE)** of **0.4617** and an **R-squared** value of **0.0005**. The final Linear Regression model, which included additional features like `'steps_per_ingredient'` and `'prop_sugar'`, achieved a slightly better **MAE** of **0.4613** and an **R-squared** value of **0.0010**. Although the improvement in MAE is minimal, the final model's R-squared value is higher, indicating that it explains a slightly larger portion of the variance in the data compared to the baseline model.
+As mentioned before, the baseline model resulted a **Mean Absolute Error (MAE)** of **0.4617** and an **R-squared** value of **0.0005**. Our final Linear Regression model which adds more features has a slightly better **MAE** of **0.4613** and an **R-squared** value of **0.0010**. Although the improvement in MAE is minimal, the final model's R-squared value is higher, indicating that the model could explain a slightly larger portion of the variance in the data compared to the baseline model.
 
-Such improvement over the baseline can be attributed to the inclusion of additional features and more sophisticated feature engineering. For example, by adding features like `'steps_per_ingredient'` and `'prop_sugar'`, the final model was able to capture more nuanced relationships between recipe characteristics and user ratings. 
+Such improvement can be attributed to the inclusion of additional features and more sophisticated feature engineering. For example, by adding features like `'steps_per_ingredient'` and `'prop_sugar'`, the final model was able to capture more nuanced relationships between recipe characteristics and user ratings. 
+ 
 
 ## Fairness Analysis
 
-To assess the fairness of our model, we evaluated whether it performs differently for two distinct groups of recipes: **high-calorie recipes** and **low-calorie recipes**. These groups were defined based on the distribution of the `'calories'` column in the dataset:
+To assess the fairness of the final model, I evaluated if it performs differently for two distinct groups of recipes: **high-calorie recipes** and **low-calorie recipes**. These groups were defined based on the distribution of the `'calories'` column in the dataset:
 
 - **Group X (High-Calorie Recipes)**: Recipes with calories greater than or equal to the **75th percentile** of the `'calories'` distribution.
 - **Group Y (Low-Calorie Recipes)**: Recipes with calories less than or equal to the **25th percentile** of the `'calories'` distribution.
 
-I chose these thresholds to ensure that the groups represent distinct subsets of the data, with high-calorie recipes being significantly more calorie-dense than low-calorie recipes.
+I chose these thresholds to ensure that the groups represent distinct subsets of the data. That is, high-calorie recipes should be significantly more calorie-dense than low-calorie recipes.
 
-I used **Mean Absolute Error (MAE)** as our evaluation metric. MAE measures the average absolute difference between the predicted and actual values of the `'average_rating'` column. This metric is appropriate because it provides a straightforward interpretation of the model's prediction errors in the same units as the response variable.
+I used **Mean Absolute Error (MAE)** as the evaluation metric, which is the same metric we use for modeling. This metric is suitable because it would provide a straightforward interpretation of the model's prediction errors in the same units as the response variable.
 
 - **Null Hypothesis**: The model is fair. The MAE for high-calorie recipes and low-calorie recipes is roughly the same, and any differences are due to random chance.
 
 - **Alternative Hypothesis**: The model is unfair. The MAE for high-calorie recipes is significantly different from the MAE for low-calorie recipes.
 
-- **Test Statistic**: The test statistic is the **absolute difference in MAE** between the two groups:
+- **Test Statistic**:  **absolute difference in MAE** 
 
 - **Significance Level**: **0.05** 
 
@@ -385,11 +379,11 @@ I used **Mean Absolute Error (MAE)** as our evaluation metric. MAE measures the 
 - **Observed Difference in MAE**: **0.0070**
 - **p-value**: **0.108**
 
-Since the p-value (**0.108**) is greater than the significance level (**0.05**), we **fail to reject the null hypothesis**. This indicates that the observed difference in MAE between high-calorie and low-calorie recipes is not statistically significant. Therefore, we conclude that the model is fair with respect to these two groups.
+Since the p-value (**0.108**) is greater than the significance level (**0.05**), we **fail to reject the null hypothesis**. This indicates that the observed difference in MAE between high-calorie and low-calorie recipes is not statistically significant. Therefore, we could say that the model is fair with respect to these two groups.
 
 ### Visualization
 
-Below is the distribution of the absolute differences in MAE from the permutation test, along with the observed difference marked by a red dashed line.
+Below is the distribution of the absolute differences in MAE from the permutation test, and the observed difference marked by a red dashed line.
 
 <iframe
   src="assets/fairness_analysis_plot.html"
@@ -398,5 +392,5 @@ Below is the distribution of the absolute differences in MAE from the permutatio
   frameborder="0"
 ></iframe>
 
-The observed difference (red dashed line) falls within the bulk of the distribution. Such indicate that the difference is not statistically significant. This supports our conclusion that the model is fair with respect to high-calorie and low-calorie recipes.
+The observed difference falls within the bulk of the distribution, which confirms that the difference is not statistically significant. This supports our conclusion that the model is fair with respect to high-calorie and low-calorie recipes.
 
